@@ -9,7 +9,6 @@ export default function TemplatesSettingsPage() {
   const [templates, setTemplates] = useState<PromptTemplate[]>([]);
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState("");
   const [isDefault, setIsDefault] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +16,7 @@ export default function TemplatesSettingsPage() {
     api
       .get<PromptTemplate[]>("/api/templates")
       .then(setTemplates)
-      .catch((e) => setError(e instanceof ApiError ? e.message : "Failed to load"));
+      .catch((e) => setError(e instanceof ApiError ? e.message : "Laden fehlgeschlagen"));
   }, []);
 
   async function createTemplate(e: React.FormEvent) {
@@ -27,13 +26,12 @@ export default function TemplatesSettingsPage() {
       const t = await api.post<PromptTemplate>("/api/templates", {
         name,
         prompt,
-        model: model || null,
+        model: null,
         is_default: isDefault,
       });
       setTemplates([t, ...templates.map((x) => (isDefault ? { ...x, is_default: false } : x))]);
       setName("");
       setPrompt("");
-      setModel("");
       setIsDefault(false);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : (e as Error).message);
@@ -52,9 +50,9 @@ export default function TemplatesSettingsPage() {
 
   return (
     <AppShell>
-      <h1 className="text-xl font-semibold">Prompt templates</h1>
+      <h1 className="text-xl font-semibold">Vorlagen</h1>
       <p className="mt-1 text-sm text-neutral-500">
-        Reusable transformation prompts. Pick one when running a transformation.
+        Wiederverwendbare Anweisungen für Transformationen.
       </p>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
@@ -64,7 +62,7 @@ export default function TemplatesSettingsPage() {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Name (e.g. Polish speech)"
+          placeholder="Name (z.B. Rede überarbeiten)"
           required
           className="block w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
         />
@@ -72,32 +70,23 @@ export default function TemplatesSettingsPage() {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={6}
-          placeholder="The prompt to send to the model"
+          placeholder="Anweisungen für die KI…"
           required
           className="block w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
         />
-        <div className="flex items-center gap-3">
+        <label className="flex items-center gap-2 text-sm text-neutral-700">
           <input
-            type="text"
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
-            placeholder="model (default claude-sonnet-4-6)"
-            className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm"
+            type="checkbox"
+            checked={isDefault}
+            onChange={(e) => setIsDefault(e.target.checked)}
           />
-          <label className="flex items-center gap-2 text-sm text-neutral-700">
-            <input
-              type="checkbox"
-              checked={isDefault}
-              onChange={(e) => setIsDefault(e.target.checked)}
-            />
-            Default
-          </label>
-        </div>
+          Standardvorlage
+        </label>
         <button
           type="submit"
           className="rounded-md bg-neutral-900 px-3 py-2 text-sm text-white"
         >
-          Save template
+          Vorlage speichern
         </button>
       </form>
 
@@ -112,11 +101,10 @@ export default function TemplatesSettingsPage() {
                 {t.name}
                 {t.is_default && (
                   <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-800">
-                    default
+                    Standard
                   </span>
                 )}
               </p>
-              <p className="mt-1 text-xs text-neutral-500">{t.model}</p>
               <p className="mt-2 whitespace-pre-wrap text-xs text-neutral-700">{t.prompt}</p>
             </div>
             <button
@@ -124,7 +112,7 @@ export default function TemplatesSettingsPage() {
               type="button"
               className="ml-3 text-xs text-red-600 hover:underline"
             >
-              Delete
+              Löschen
             </button>
           </li>
         ))}

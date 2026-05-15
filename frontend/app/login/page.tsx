@@ -29,9 +29,9 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-24">
-      <h1 className="text-2xl font-semibold">Sign in</h1>
+      <h1 className="text-2xl font-semibold">Anmelden</h1>
       <p className="mt-2 text-sm text-neutral-500">
-        We&apos;ll email you a magic link.
+        Wir senden dir einen Magic-Link per E-Mail.
       </p>
       <form onSubmit={onSubmit} className="mt-6 space-y-3">
         <input
@@ -39,7 +39,7 @@ export default function LoginPage() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder="deine@email.com"
           className="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900"
         />
         <button
@@ -47,12 +47,15 @@ export default function LoginPage() {
           disabled={status === "sending"}
           className="w-full rounded-md bg-neutral-900 px-3 py-2 text-white disabled:opacity-50"
         >
-          {status === "sending" ? "Sending…" : "Send magic link"}
+          {status === "sending" ? "Wird gesendet…" : "Magic-Link senden"}
         </button>
       </form>
       {status === "sent" && (
         <p className="mt-4 text-sm text-emerald-700">
-          Check your email (or the local Inbucket at http://127.0.0.1:54324 in dev).
+          E-Mail gesendet! Bitte prüfe deinen Posteingang
+          {process.env.NODE_ENV === "development" && (
+            <> (oder <a href="http://127.0.0.1:54324" className="underline" target="_blank" rel="noreferrer">Inbucket</a> im Dev-Modus)</>
+          )}.
         </p>
       )}
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}

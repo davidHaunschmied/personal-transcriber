@@ -20,12 +20,12 @@ export default function NewRecordingPage() {
     setBusy(true);
     setError(null);
     try {
-      setStage("Creating recording…");
+      setStage("Aufnahme anlegen…");
       const reg = await api.post<RecordingRegistered>("/api/recordings", {
         original_filename: file.name,
       });
 
-      setStage("Uploading audio…");
+      setStage("Audio hochladen…");
       const supabase = createSupabaseBrowserClient();
       const { error: upErr } = await supabase.storage
         .from("recordings")
@@ -34,7 +34,7 @@ export default function NewRecordingPage() {
         });
       if (upErr) throw new Error(upErr.message);
 
-      setStage("Starting transcription…");
+      setStage("Transkription starten…");
       await api.post(`/api/recordings/${reg.recording.id}/transcribe`);
 
       router.push(`/recordings/${reg.recording.id}`);
@@ -46,9 +46,9 @@ export default function NewRecordingPage() {
 
   return (
     <AppShell>
-      <h1 className="text-xl font-semibold">New recording</h1>
+      <h1 className="text-xl font-semibold">Neue Aufnahme</h1>
       <p className="mt-2 text-sm text-neutral-500">
-        Upload an audio file (max 25&nbsp;MB). Transcription starts automatically.
+        Audiodatei hochladen (max. 25&nbsp;MB). Die Transkription startet automatisch.
       </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
@@ -64,7 +64,7 @@ export default function NewRecordingPage() {
           disabled={!file || busy}
           className="rounded-md bg-neutral-900 px-3 py-2 text-sm text-white disabled:opacity-50"
         >
-          {busy ? stage || "Working…" : "Upload & transcribe"}
+          {busy ? stage || "Bitte warten…" : "Hochladen & transkribieren"}
         </button>
       </form>
 

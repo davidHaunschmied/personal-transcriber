@@ -5,10 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 const links = [
-  { href: "/dashboard", label: "Recordings" },
-  { href: "/recordings/new", label: "New" },
-  { href: "/settings/style", label: "Style" },
-  { href: "/settings/templates", label: "Templates" },
+  { href: "/dashboard", label: "Aufnahmen" },
+  { href: "/recordings/new", label: "Neu" },
+  { href: "/settings/style", label: "Stil" },
+  { href: "/settings/templates", label: "Vorlagen" },
 ];
 
 export function Nav() {
@@ -26,7 +26,7 @@ export function Nav() {
     <header className="border-b border-neutral-200 bg-white">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link href="/dashboard" className="font-semibold">
-          Transcriber
+          Transkriptor
         </Link>
         <div className="flex items-center gap-4 text-sm">
           {links.map((l) => {
@@ -35,7 +35,7 @@ export function Nav() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={active ? "text-neutral-900 font-medium" : "text-neutral-500 hover:text-neutral-900"}
+                className={active ? "font-medium text-neutral-900" : "text-neutral-500 hover:text-neutral-900"}
               >
                 {l.label}
               </Link>
@@ -46,7 +46,7 @@ export function Nav() {
             className="text-neutral-500 hover:text-neutral-900"
             type="button"
           >
-            Sign out
+            Abmelden
           </button>
         </div>
       </nav>

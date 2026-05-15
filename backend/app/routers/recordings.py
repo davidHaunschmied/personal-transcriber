@@ -4,7 +4,7 @@ from supabase import Client
 from app.auth import CurrentUser, get_current_user
 from app.config import Settings, get_settings
 from app.deps import get_supabase
-from app.models import Recording, RecordingRegister, RecordingRegistered
+from app.models import Recording, RecordingRegister, RecordingRegistered, TranscriptUpdate
 from app.pipeline import transcribe_recording
 from app.services import storage as storage_svc
 
@@ -118,6 +118,25 @@ def trigger_transcribe(
         recording_id=recording_id,
     )
     return Recording(**res.data)
+
+
+@router.patch("/{recording_id}", response_model=Recording)
+def update_transcript(
+    recording_id: str,
+    body: TranscriptUpdate,
+    user: CurrentUser = Depends(get_current_user),
+    supabase: Client = Depends(get_supabase),
+) -> Recording:
+    res = (
+        supabase.table("recordings")
+        .update({"transcript": body.transcript})
+        .eq("id", recording_id)
+        .eq("user_id", user.id)
+        .execute()
+    )
+    if not res.data:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "recording not found")
+    return Recording(**res.data[0])
 
 
 @router.delete("/{recording_id}", status_code=status.HTTP_204_NO_CONTENT)

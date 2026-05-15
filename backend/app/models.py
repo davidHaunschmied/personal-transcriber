@@ -66,6 +66,10 @@ class RecordingRegister(BaseModel):
     original_filename: str = Field(min_length=1, max_length=255)
 
 
+class TranscriptUpdate(BaseModel):
+    transcript: str
+
+
 class RecordingRegistered(BaseModel):
     recording: Recording
     upload_url: str
