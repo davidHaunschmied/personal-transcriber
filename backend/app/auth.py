@@ -1,5 +1,7 @@
-import jwt
+from functools import lru_cache
+
 from fastapi import Depends, Header, HTTPException, status
+from supabase import Client, create_client
 
 from app.config import Settings, get_settings
 
@@ -10,6 +12,11 @@ class CurrentUser:
         self.email = email
 
 
+@lru_cache
+def _anon_client(url: str, key: str) -> Client:
+    return create_client(url, key)
+
+
 def get_current_user(
     authorization: str | None = Header(default=None),
     settings: Settings = Depends(get_settings),
@@ -18,16 +25,11 @@ def get_current_user(
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "missing bearer token")
     token = authorization.split(" ", 1)[1].strip()
     try:
-        payload = jwt.decode(
-            token,
-            settings.supabase_jwt_secret,
-            algorithms=["HS256"],
-            audience="authenticated",
-        )
-    except jwt.PyJWTError as exc:
+        client = _anon_client(settings.supabase_url, settings.supabase_anon_key)
+        response = client.auth.get_user(token)
+    except Exception as exc:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, f"invalid token: {exc}") from exc
-
-    sub = payload.get("sub")
-    if not sub:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "token missing sub")
-    return CurrentUser(user_id=sub, email=payload.get("email"))
+    user = response.user
+    if not user:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "invalid token")
+    return CurrentUser(user_id=user.id, email=user.email)

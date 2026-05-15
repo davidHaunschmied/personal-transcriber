@@ -40,7 +40,7 @@ Three terminals: `supabase start` (idempotent), `uv run uvicorn app.main:app --r
 
 ## Common gotchas
 
-- The Supabase **JWT secret** in `backend/.env` must match the one printed by `supabase start`. Mismatch → 401 on every call.
+- Auth uses `supabase.auth.get_user(jwt)` for token verification (not local PyJWT decode) — works across Supabase CLI versions regardless of JWT algorithm. No JWT secret needed in `.env`.
 - `supabase-py`'s `create_signed_upload_url` return-shape has shifted across versions. `services/storage.py` reads multiple key spellings defensively — preserve that if you touch it.
 - Groq's audio endpoint rejects files > 25 MB. The backend pre-checks and surfaces a friendly error.
 - The `on_auth_user_created` trigger inserts a `profiles` row on signup. If you reset auth users without resetting profiles, you'll get orphan rows.
