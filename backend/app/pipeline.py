@@ -56,7 +56,7 @@ def run_transformation(
     settings: Settings,
     transformation_id: str,
 ) -> None:
-    """Background task: load context + transcript, call Anthropic, update row."""
+    """Background task: load context + transcript, call Groq LLM, update row."""
     try:
         supabase.table("transformations").update({"status": "running", "error": None}).eq(
             "id", transformation_id

@@ -58,7 +58,7 @@ create table prompt_templates (
     user_id uuid not null references auth.users(id) on delete cascade,
     name text not null,
     prompt text not null,
-    model text not null default 'claude-sonnet-4-6',
+    model text not null default 'llama-3.3-70b-versatile',
     is_default boolean not null default false,
     created_at timestamptz not null default now()
 );

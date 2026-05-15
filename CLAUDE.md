@@ -4,7 +4,7 @@ Guidance for Claude (and other AI assistants) working in this repo. Keep edits t
 
 ## What this is
 
-A SaaS for: **upload audio → transcribe (Groq Whisper) → run user-defined LLM transformations (Anthropic)** against the transcript. Two target users — a German-speaking politician dictating speeches, and the author recording personal notes — collapse to the same pipeline.
+A SaaS for: **upload audio → transcribe (Groq Whisper) → run user-defined LLM transformations (Groq)** against the transcript. Two target users — a German-speaking politician dictating speeches, and the author recording personal notes — collapse to the same pipeline.
 
 ## Architecture in one paragraph
 
@@ -15,7 +15,7 @@ Next.js frontend → FastAPI backend → Supabase (Postgres + Auth + Storage). T
 - Backend: Python 3.11+, FastAPI, `uv`, `supabase-py` service-role client.
 - Frontend: Next.js 15 App Router, TS, Tailwind, `@supabase/ssr`.
 - Transcription model: `whisper-large-v3` via Groq.
-- Transformation model: `claude-sonnet-4-6` (Opus 4.7 selectable per template). Prompt caching is enabled on the system block — keep the style guide + reference speeches there so the cache hits.
+- Transformation model: `llama-3.3-70b-versatile` via Groq (both STT and LLM use the same Groq key).
 
 ## Conventions
 

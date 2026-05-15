@@ -1,15 +1,9 @@
-from anthropic import Anthropic
+from groq import Groq
 
 from app.config import Settings
 
 
-def build_system_blocks(style_guide: str, reference_speeches: list[dict]) -> list[dict]:
-    """Build cacheable system blocks: style guide + reference speeches.
-
-    The whole system context is the same across many transformations for one user,
-    so we mark the final block as ephemeral-cacheable. Anthropic caches the prefix,
-    cutting cost on repeated runs.
-    """
+def build_system_prompt(style_guide: str, reference_speeches: list[dict]) -> str:
     parts: list[str] = []
     if style_guide.strip():
         parts.append("## Style guide\n\n" + style_guide.strip())
@@ -19,9 +13,8 @@ def build_system_blocks(style_guide: str, reference_speeches: list[dict]) -> lis
         if content.strip():
             parts.append(f"## Reference speech: {title}\n\n{content.strip()}")
     if not parts:
-        parts.append("You are a careful editor. Follow the user's instructions exactly.")
-    text = "\n\n---\n\n".join(parts)
-    return [{"type": "text", "text": text, "cache_control": {"type": "ephemeral"}}]
+        return "You are a careful editor. Follow the user's instructions exactly."
+    return "\n\n---\n\n".join(parts)
 
 
 def transform(
@@ -33,21 +26,17 @@ def transform(
     user_prompt: str,
     transcript: str,
 ) -> str:
-    client = Anthropic(api_key=settings.anthropic_api_key)
-    system = build_system_blocks(style_guide, reference_speeches)
-    message = client.messages.create(
+    client = Groq(api_key=settings.groq_api_key)
+    system = build_system_prompt(style_guide, reference_speeches)
+    completion = client.chat.completions.create(
         model=model,
         max_tokens=4096,
-        system=system,
         messages=[
+            {"role": "system", "content": system},
             {
                 "role": "user",
-                "content": (
-                    f"{user_prompt.strip()}\n\n"
-                    f"### Transcript\n\n{transcript.strip()}"
-                ),
-            }
+                "content": f"{user_prompt.strip()}\n\n### Transcript\n\n{transcript.strip()}",
+            },
         ],
     )
-    chunks = [block.text for block in message.content if getattr(block, "type", None) == "text"]
-    return "".join(chunks).strip()
+    return completion.choices[0].message.content.strip()

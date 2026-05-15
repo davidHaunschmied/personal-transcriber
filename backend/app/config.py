@@ -12,11 +12,10 @@ class Settings(BaseSettings):
     supabase_jwt_secret: str
 
     groq_api_key: str
-    anthropic_api_key: str
 
     cors_origins: str = "http://localhost:3000"
 
-    default_transformation_model: str = "claude-sonnet-4-6"
+    default_transformation_model: str = "llama-3.3-70b-versatile"
     whisper_model: str = "whisper-large-v3"
     max_audio_bytes: int = 25 * 1024 * 1024
     recordings_bucket: str = "recordings"
