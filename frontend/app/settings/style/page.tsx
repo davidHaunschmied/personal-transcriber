@@ -68,7 +68,7 @@ export default function StyleSettingsPage() {
     <AppShell>
       <h1 className="text-xl font-semibold">Stil</h1>
       <p className="mt-1 text-sm text-neutral-500">
-        Stilguide und Referenzreden werden bei jeder Transformation mitgesendet.
+        Stilguide und Referenzreden werden bei jedem Entwurf mitgesendet.
       </p>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}

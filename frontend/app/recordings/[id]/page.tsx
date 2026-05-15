@@ -276,7 +276,7 @@ export default function RecordingDetailPage({
           {/* Run transformation */}
           {recording.status === "transcribed" && (
             <section className="mt-6">
-              <h2 className="text-sm font-medium text-neutral-700">Transformation starten</h2>
+              <h2 className="text-sm font-medium text-neutral-700">Entwurf erstellen</h2>
               <form onSubmit={runTransformation} className="mt-2 space-y-3">
                 {templates.length > 0 && (
                   <select
@@ -314,7 +314,7 @@ export default function RecordingDetailPage({
           {/* Transformations */}
           {transformations.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-sm font-medium text-neutral-700">Ergebnisse</h2>
+              <h2 className="text-sm font-medium text-neutral-700">Entwürfe</h2>
               <ul className="mt-2 space-y-3">
                 {transformations.map((t) => (
                   <li key={t.id} className="rounded-md border border-neutral-200 bg-white p-4">

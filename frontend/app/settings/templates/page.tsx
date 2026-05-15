@@ -52,7 +52,7 @@ export default function TemplatesSettingsPage() {
     <AppShell>
       <h1 className="text-xl font-semibold">Vorlagen</h1>
       <p className="mt-1 text-sm text-neutral-500">
-        Wiederverwendbare Anweisungen für Transformationen.
+        Wiederverwendbare Anweisungen für Entwürfe.
       </p>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
