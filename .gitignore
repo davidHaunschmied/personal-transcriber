@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+.env.local
+
+# Node
+node_modules/
+.next/
+out/
+.DS_Store
+
+# Supabase local volumes
+supabase/.branches/
+supabase/.temp/
+
+# Editors
+.vscode/
+.idea/
