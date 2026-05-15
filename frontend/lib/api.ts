@@ -25,7 +25,12 @@ export async function apiFetch<T>(
     ...auth,
     ...(init.headers as Record<string, string> | undefined),
   };
-  const res = await fetch(`${API_URL}${path}`, { ...init, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...init, headers });
+  } catch {
+    throw new ApiError(0, "Server nicht erreichbar. Bitte versuche es später erneut.");
+  }
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new ApiError(res.status, text || res.statusText);
