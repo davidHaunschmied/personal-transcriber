@@ -54,7 +54,7 @@ export default function NewRecordingPage() {
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <input
           type="file"
-          accept="audio/*"
+          accept="audio/*,video/mp4,video/quicktime,.mp3,.mp4,.m4a,.wav,.ogg,.webm,.aac"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           className="block w-full text-sm"
           required
